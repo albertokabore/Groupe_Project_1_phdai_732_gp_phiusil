@@ -2,7 +2,8 @@
 
 **Reviewer:** Claude (Cowork), on request from J. Eric Collier
 **Date:** September 14, 2026
-**Repo reviewed:** `C:\Users\NCFI\Documents\GitHub\phdai_732_gp_phiusil`
+**Repo:** `github.com/jecollier041/phdai_732_gp_phiusil`, working copy at
+`D:\Projects\phdai_732_gp_phiusil`
 
 ---
 
@@ -119,17 +120,19 @@ did not exist. `_find_raw_csv()` now checks `data/`, then the repo root, then
 when nothing is on disk, which is where the notebook's `ucimlrepo` fetch writes.
 A teammate who unzips the UCI download in place is no longer blocked.
 
-I could not move or delete your two CSV copies from here. The device bridge caps
-writes at 20 MB per file, and file deletion on your machine is not enabled for
-this session. Do this yourself:
+**Resolved.** The stale root-level copies of the five modules and the notebook
+have been deleted, the duplicate extraction folder is gone, and the dataset now
+lives at `data/PhiUSIIL_Phishing_URL_Dataset.csv`. Nothing to do here.
 
-```
-cd C:\Users\NCFI\Documents\GitHub\phdai_732_gp_phiusil
-move PhiUSIIL_Phishing_URL_Dataset.csv data\
-rmdir /s /q "phiusiil+phishing+url+dataset"
-```
-
-`.gitignore` covers you either way, but carrying two 57 MB copies is pointless.
+One note for anyone working on Windows. The repo originally sat under
+`Documents`, which Windows Defender protects by default under Controlled Folder
+Access. CFA blocks by process identity rather than by ACL, so deletes failed with
+"Access is denied" even from an elevated PowerShell with `FullControl` on the
+file, and Defender logged Event 1123 naming `powershell.exe` each time. Moving
+the repo to `D:\Projects\` resolved it. If you keep your clone under `Documents`,
+`Desktop`, or `Pictures` and git starts throwing permission errors, that is the
+cause. Check the Defender Operational log for Event 1123 before assuming the repo
+is corrupt.
 
 ### 7. `ucimlrepo` was missing from `requirements.txt`
 
@@ -305,12 +308,18 @@ will assume phishing is.
 
 ## Blockers for Monday
 
-None, once you push. Concretely:
+None. The scaffold is pushed and the history is clean: the largest objects in
+the repo are the two compressed split files at roughly 660 KB each, and no copy
+of the dataset is tracked.
 
-1. Move the CSV and delete the duplicate folder, using the two commands above.
-2. `git add -A`, commit, push. Verify `git ls-files` shows no CSV.
-3. Have one teammate clone fresh and run the notebook's first three cells. That
-   is the only real test of whether Monday works.
+One item remains open, and it is not code. Nobody has yet confirmed that the
+notebook's `ucimlrepo` fetch cell returns all 56 columns. `ucimlrepo` sorts
+identifier columns into `ds.data.ids` on some datasets rather than
+`ds.data.features`, and if `FILENAME`, `URL`, `Domain`, or `Title` land there,
+`load_data()` raises a `KeyError` naming them. The fetch cell already
+concatenates `ids` when present, so it should hold, but it is the first cell four
+people will run and it has not been executed against the live UCI endpoint.
+Whoever runs the notebook first should report back on that cell specifically.
 
 `results/split_assignment.csv` and `results/split_assignment_grouped.csv` are
 written and ready to commit. Treat them as provisional until the data steward
