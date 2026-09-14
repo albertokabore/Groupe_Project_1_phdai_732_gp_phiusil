@@ -1,0 +1,32 @@
+# The dataset is never committed. The notebook fetches it with ucimlrepo.
+data/*.csv
+*.csv.zip
+PhiUSIIL_Phishing_URL_Dataset.csv
+phiusiil+phishing+url+dataset/
+
+# Stale pre-refactor copies of the modules and the notebook, still sitting at
+# the repo root because Windows will not let them be deleted. The live versions
+# are src/*.py and notebooks/part1_colab.ipynb. The leading slash anchors these
+# to the root so src/config.py and friends are unaffected.
+/config.py
+/data.py
+/splits.py
+/leakage.py
+/models.py
+/part1_colab.ipynb
+
+# results/ IS committed. The frozen split and the metrics JSON are the
+# handoff between the person who produced a number and the person who writes
+# it into the report. Do not add results/ here.
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
+
+# Desktop app scratch, not project content.
+Claude outputs/
