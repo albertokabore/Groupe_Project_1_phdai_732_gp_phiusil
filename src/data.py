@@ -4,11 +4,56 @@ Returns the cleaned frame plus a cleaning log dict that the preprocessing
 section of the report is written from.
 """
 
+import hashlib
 import json
+import warnings
 
 import pandas as pd
 
 from . import config as C
+
+
+def fingerprint(df):
+    """SHA-256 of the sorted URL column. Stable across download paths."""
+    return hashlib.sha256(
+        "\n".join(sorted(df["URL"].astype(str))).encode()
+    ).hexdigest()
+
+
+def verify_dataset(df, strict=False):
+    """Confirm this copy of the dataset matches everyone else's.
+
+    Returns a dict for the cleaning log. Warns by default rather than raising,
+    because a mismatch on day one is more likely to mean UCI changed something
+    than that one teammate is wrong, and blocking four people on that is worse
+    than telling them. Pass strict=True once the group has agreed on a
+    fingerprint and wants divergence to be fatal.
+    """
+    got = fingerprint(df)
+    ok = (
+        got == C.EXPECTED_FINGERPRINT
+        and len(df) == C.EXPECTED_CLEAN_ROWS
+        and {str(k): int(v) for k, v in df[C.LABEL].value_counts().items()}
+        == C.EXPECTED_CLASS_COUNTS
+    )
+    result = {
+        "fingerprint": got,
+        "fingerprint_expected": C.EXPECTED_FINGERPRINT,
+        "fingerprint_matches": ok,
+    }
+    if not ok:
+        message = (
+            "DATASET MISMATCH. This copy does not match the one the group's "
+            f"numbers were built on.\n  expected fingerprint: {C.EXPECTED_FINGERPRINT}"
+            f"\n  got                 : {got}"
+            f"\n  expected clean rows : {C.EXPECTED_CLEAN_ROWS}, got {len(df)}"
+            "\nDo not report metrics from this copy until the group resolves it. "
+            "Delete data/PhiUSIIL_Phishing_URL_Dataset.csv and refetch first."
+        )
+        if strict:
+            raise ValueError(message)
+        warnings.warn(message, stacklevel=2)
+    return result
 
 
 def _validate_schema(df):
@@ -80,6 +125,7 @@ def load_data(path=None, write_log=True):
         }
     )
     log.update(_check_label_orientation(df))
+    log.update(verify_dataset(df))
 
     if write_log:
         (C.RESULTS_DIR / "cleaning_log.json").write_text(json.dumps(log, indent=2))

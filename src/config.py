@@ -40,6 +40,21 @@ def _find_raw_csv():
 RAW_CSV = _find_raw_csv()
 SPLIT_FILE = RESULTS_DIR / "split_assignment.csv"
 
+# --- Dataset fingerprint -----------------------------------------------------
+# Five people download this dataset independently. Nothing else proves they got
+# the same bytes, and a silent difference makes their metrics incomparable.
+#
+# The fingerprint is the SHA-256 of the sorted, newline-joined URL column after
+# cleaning. It is deliberately not a hash of the CSV file: the UCI direct
+# download and the ucimlrepo fetch produce byte-different files (column order,
+# byte-order mark, float formatting) from identical data. Hashing the URL set
+# survives both paths.
+#
+# Established 2026-09-14 from UCI #967.
+EXPECTED_FINGERPRINT = "0f9dc76443ca80d8e2cd7ad7183795a7c4619c1b0b2d4a37a60635003a568a3b"
+EXPECTED_CLEAN_ROWS = 235370
+EXPECTED_CLASS_COUNTS = {"1": 134850, "0": 100520}
+
 # --- Reproducibility ---------------------------------------------------------
 SEED = 42
 TEST_SIZE = 0.25

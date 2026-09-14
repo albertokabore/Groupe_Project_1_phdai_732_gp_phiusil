@@ -28,7 +28,12 @@ Five rules. They exist so five people produce one set of numbers.
 4. **Results go to disk as JSON or CSV.** Report writers read `results/`. Nobody
    retypes a number out of a Colab output.
 5. **The dataset is not committed.** `.gitignore` blocks `data/*.csv`. The notebook
-   fetches it via `ucimlrepo`.
+   fetches it via `ucimlrepo`, so each person downloads their own copy. `load_data()`
+   fingerprints that copy and warns if it does not match the group's. The fingerprint
+   is the SHA-256 of the sorted URL column, not of the file, because the direct UCI
+   download and the `ucimlrepo` fetch produce byte-different files from identical
+   data. Check `fingerprint_matches` in `results/cleaning_log.json` before you report
+   a number.
 
 ## Layout
 
