@@ -1,0 +1,51 @@
+{
+  "completed_utc": "2026-09-15T20:22:05.578147+00:00",
+  "rows_raw": 235795,
+  "rows_clean": 235370,
+  "duplicate_urls_removed": 425,
+  "conflicting_url_labels": 0,
+  "missing_values": 0,
+  "non_finite_model_values": 0,
+  "class_counts": {
+    "1": 134850,
+    "0": 100520
+  },
+  "fingerprint_matches": true,
+  "raw_sha256": "a236549cd369cd80bd478ff8e1779cbf44c58d5c3f79f7a51a1adbed7d06d1c6",
+  "split_sha256": "1caf0ca9a0c10c527cf92bbfe7b855b33a1f947429eeebfff0045561267b6bc5",
+  "cleaned_file": "data\\PhiUSIIL_cleaned.csv",
+  "excluded_model_columns": [
+    "Domain",
+    "FILENAME",
+    "TLD",
+    "Title",
+    "URL"
+  ],
+  "feature_sets": [
+    {
+      "feature_set": "full",
+      "n_features": 50,
+      "n_train": 176527,
+      "n_test": 58843,
+      "scaled_inputs_finite": true
+    },
+    {
+      "feature_set": "no_derived",
+      "n_features": 44,
+      "n_train": 176527,
+      "n_test": 58843,
+      "scaled_inputs_finite": true
+    },
+    {
+      "feature_set": "url_only",
+      "n_features": 18,
+      "n_train": 176527,
+      "n_test": 58843,
+      "scaled_inputs_finite": true
+    }
+  ],
+  "scaling": "Fitted on training rows only; model pipelines refit within each CV fold.",
+  "imputation": "Not needed: no missing values detected.",
+  "outliers": "Retained; no unvalidated clipping or removal.",
+  "encoding": "Configured predictors are numeric; categorical TLD is excluded."
+}
