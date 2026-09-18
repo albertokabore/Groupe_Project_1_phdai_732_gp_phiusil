@@ -88,22 +88,32 @@ random forest (300 trees) — were fit on a stratified 75/25 train/test split
 `URLSimilarityIndex`), and `url_only` (the 18 lexical features readable from
 the URL string alone, before any page is fetched). Five-fold cross-validated
 F1 on the training set is reported alongside the held-out test metrics.
+Precision, recall, F1, and CV F1 are computed for phishing (label 0) as the
+positive class (`config.POS_LABEL`), not scikit-learn's default of legitimate
+(label 1); accuracy and ROC AUC are unaffected by that choice.
 
-| Feature set | Model | Accuracy | F1 | ROC AUC | CV F1 (train) |
+| Feature set | Model | Accuracy | F1 (phishing) | ROC AUC | CV F1 (phishing, train) |
 |---|---|---|---|---|---|
-| full | majority baseline | 0.573 | 0.728 | 0.500 | — |
-| full | logistic regression | 0.9999 | 0.9999 | 1.0000 | 0.9999 |
+| full | majority baseline | 0.5729 | 0.0000 | 0.5000 | — |
+| full | logistic regression | 0.9999 | 0.9999 | 1.0000 | 0.9998 |
 | full | decision tree | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 | full | random forest | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| no_derived | logistic regression | 0.9993 | 0.9993 | 1.0000 | 0.9994 |
-| no_derived | decision tree | 0.9990 | 0.9991 | 0.9990 | 0.9991 |
-| no_derived | random forest | 0.9999 | 0.9999 | 1.0000 | 0.9999 |
-| url_only | logistic regression | 0.9959 | 0.9964 | 0.9981 | 0.9966 |
-| url_only | decision tree | 0.9972 | 0.9976 | 0.9967 | 0.9975 |
-| url_only | random forest | 0.9973 | 0.9976 | 0.9981 | 0.9976 |
+| no_derived | majority baseline | 0.5729 | 0.0000 | 0.5000 | — |
+| no_derived | logistic regression | 0.9993 | 0.9991 | 1.0000 | 0.9991 |
+| no_derived | decision tree | 0.9990 | 0.9988 | 0.9990 | 0.9987 |
+| no_derived | random forest | 0.9999 | 0.9998 | 1.0000 | 0.9998 |
+| url_only | majority baseline | 0.5729 | 0.0000 | 0.5000 | — |
+| url_only | logistic regression | 0.9959 | 0.9952 | 0.9981 | 0.9954 |
+| url_only | decision tree | 0.9972 | 0.9967 | 0.9967 | 0.9966 |
+| url_only | random forest | 0.9973 | 0.9968 | 0.9981 | 0.9968 |
 
+The majority baseline's phishing F1 is 0.0000 by construction: predicting
+"legitimate" for every URL never identifies a phishing URL, so phishing
+precision, recall, and F1 are all zero even though accuracy is 57.29% — a
+reminder that accuracy alone is the wrong metric for this class balance.
 Full metrics, per-model confusion matrices, and timestamps are in
-`results/metrics_<feature_set>_<model>.json`.
+`results/metrics_stratified_<feature_set>_<model>.json`; the comparison
+table with all four metrics per row is `results/initial_model_comparison.csv`.
 
 The result is the flat ablation the leakage screen predicted: accuracy moves
 from 1.0000 to 0.9999 to 0.9973 across `full` → `no_derived` → `url_only`.
@@ -113,11 +123,11 @@ actually be judged, before any page is fetched — costs about a quarter of a
 percentage point, not the large gap the single-feature screen alone would
 suggest. This benchmark cannot be repaired by dropping a named feature group;
 the classes differ systematically in shape (Section 2) rather than in one
-removable column. `precision` and `recall` above use scikit-learn's default
-positive class (label 1, legitimate); a report that states "recall for
-phishing detection" from these numbers would be describing the wrong class,
-and the team should agree on and state the intended positive class before
-Part 2.
+removable column. The url_only random forest is the strongest model that
+avoids both the construction-derived and page-content features: on the
+held-out test set it reaches 99.92% phishing precision and 99.44% phishing
+recall (140 phishing URLs missed out of 25,130; 20 legitimate URLs
+misclassified out of 33,713).
 
 ## 4. Team Collaboration Process
 
