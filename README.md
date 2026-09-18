@@ -61,7 +61,7 @@ Defined once in `config.FEATURE_SETS`. Every model runs against all three.
 |---|---|---|
 | `full` | everything | what the benchmark reports |
 | `no_derived` | drop construction-derived features | how much was the artifact |
-| `url_only` | lexical features from the URL string | what survives deployment |
+| `url_only` | lexical features from the URL string | whether the artifact is localized |
 
 ## Roles and handoffs
 
