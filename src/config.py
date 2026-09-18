@@ -110,3 +110,10 @@ FEATURE_SETS = {
     "no_derived": URL_LEXICAL + PAGE_CONTENT,
     "url_only": URL_LEXICAL,
 }
+
+# Label 1 is legitimate and label 0 is phishing, confirmed by _check_label_orientation
+# in results/cleaning_log.json. sklearn defaults to pos_label=1, so every precision,
+# recall, and F1 would otherwise describe detection of legitimate URLs. This project
+# reports phishing detection. Group decision, 9/16.
+POS_LABEL = 0
+LEGITIMATE_LABEL = 1
