@@ -1,5 +1,5 @@
 {
-  "path": "C:\\Users\\alber\\Groupe_Project_1_phdai_732_gp_phiusil\\data\\PhiUSIIL_Phishing_URL_Dataset.csv",
+  "path": "/content/phdai_732_gp_phiusil/data/PhiUSIIL_Phishing_URL_Dataset.csv",
   "rows_raw": 235795,
   "cols_raw": 56,
   "unaccounted_columns": [
