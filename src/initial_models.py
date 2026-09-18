@@ -36,7 +36,7 @@ def run_initial_models():
         "dataset_sha256": hashlib.sha256(C.RAW_CSV.read_bytes()).hexdigest(),
         "url_fingerprint": log["fingerprint"], "split_sha256": split_hash,
         "seed": C.SEED, "cv_folds": C.CV_FOLDS,
-        "split_strategy": "stratified", "positive_class": "legitimate (1)",
+        "split_strategy": "stratified", "positive_class": "phishing (0)",
         "feature_sets": C.FEATURE_SETS,
         "python": platform.python_version(), "sklearn": sklearn.__version__,
         "pandas": pd.__version__, "numpy": np.__version__,
@@ -94,7 +94,7 @@ def show_initial_results():
     table.to_csv(C.RESULTS_DIR / "initial_model_comparison.csv", index=False)
     display(table[["feature_set", "model", "accuracy", "phishing_precision",
                    "phishing_recall", "phishing_f1", "roc_auc", "cv_f1_mean"]].round(6))
-    print("CV F1 uses legitimate (1); phishing metrics use phishing (0).")
+    print("Precision/recall/F1, including CV F1, use phishing (0) as the positive class.")
     print("Completed:", manifest["finished_utc"])
     ax = table.pivot(index="model", columns="feature_set", values="accuracy").plot.bar(
         figsize=(10, 5), ylim=(0, 1.05), title="Initial model test accuracy")
