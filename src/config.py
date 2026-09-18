@@ -63,6 +63,10 @@ CV_FOLDS = 5
 # --- Columns -----------------------------------------------------------------
 LABEL = "label"
 
+# Positive class for precision/recall/F1: phishing (0), not sklearn's default
+# of 1. Label 1 is legitimate. Accuracy and ROC AUC are unaffected.
+POS_LABEL = 0
+
 # Identifiers and free text. Never model on these.
 DROP_ALWAYS = ["FILENAME", "URL", "Domain", "Title"]
 

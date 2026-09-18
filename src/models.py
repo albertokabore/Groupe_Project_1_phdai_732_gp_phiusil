@@ -3,6 +3,17 @@
 Every result in the report comes from evaluate(), which writes a JSON record to
 results/. Report writers read those files. Nobody transcribes a number from a
 Colab cell into a Word document by hand.
+
+Positive class: precision, recall, F1, and the cross-validated F1 are computed
+for C.POS_LABEL (phishing, 0), not sklearn's default of 1. Label 1 is
+legitimate, so the defaults described detection of legitimate URLs.
+Accuracy and ROC AUC are unaffected by the choice.
+
+Confusion-matrix keys keep sklearn's sorted-label order, which puts phishing (0)
+first. So "tn" counts phishing URLs correctly identified as phishing and "tp"
+counts legitimate URLs correctly identified as legitimate. The names are
+inherited from sklearn and are deliberately not renamed, because
+initial_models.py and the confusion-matrix figures read these keys in this order.
 """
 
 import json
@@ -16,6 +27,7 @@ from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
     f1_score,
+    make_scorer,
     precision_score,
     recall_score,
     roc_auc_score,
@@ -45,8 +57,16 @@ def build_models():
     }
 
 
-def evaluate(model, name, feature_set, X_train, X_test, y_train, y_test, cv=True):
-    """Fit, score, persist. Returns the metrics dict."""
+def evaluate(
+    model, name, feature_set, X_train, X_test, y_train, y_test, cv=True,
+    split="stratified",
+):
+    """Fit, score, persist. Returns the metrics dict.
+
+    split is recorded and written into the filename, so a grouped run does not
+    overwrite the stratified results.
+    """
+    pos = C.POS_LABEL
     model.fit(X_train, y_train)
     pred = model.predict(X_test)
 
@@ -60,13 +80,16 @@ def evaluate(model, name, feature_set, X_train, X_test, y_train, y_test, cv=True
     record = {
         "model": name,
         "feature_set": feature_set,
+        "split": split,
+        "pos_label": int(pos),
+        "pos_label_meaning": "phishing",
         "n_features": int(X_train.shape[1]),
         "n_train": int(len(X_train)),
         "n_test": int(len(X_test)),
         "accuracy": accuracy_score(y_test, pred),
-        "precision": precision_score(y_test, pred, zero_division=0),
-        "recall": recall_score(y_test, pred, zero_division=0),
-        "f1": f1_score(y_test, pred, zero_division=0),
+        "precision": precision_score(y_test, pred, pos_label=pos, zero_division=0),
+        "recall": recall_score(y_test, pred, pos_label=pos, zero_division=0),
+        "f1": f1_score(y_test, pred, pos_label=pos, zero_division=0),
         "roc_auc": auc,
         "confusion_matrix": {"tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)},
         "seed": C.SEED,
@@ -75,11 +98,16 @@ def evaluate(model, name, feature_set, X_train, X_test, y_train, y_test, cv=True
 
     if cv and name != "baseline_majority":
         scores = cross_val_score(
-            model, X_train, y_train, cv=C.CV_FOLDS, scoring="f1", n_jobs=-1
+            model,
+            X_train,
+            y_train,
+            cv=C.CV_FOLDS,
+            scoring=make_scorer(f1_score, pos_label=pos, zero_division=0),
+            n_jobs=-1,
         )
         record["cv_f1_mean"] = float(np.mean(scores))
         record["cv_f1_sd"] = float(np.std(scores, ddof=1))
 
-    out = C.RESULTS_DIR / f"metrics_{feature_set}_{name}.json"
+    out = C.RESULTS_DIR / f"metrics_{split}_{feature_set}_{name}.json"
     out.write_text(json.dumps(record, indent=2, default=float))
     return record
