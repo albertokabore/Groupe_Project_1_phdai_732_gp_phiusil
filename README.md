@@ -5,14 +5,48 @@ PhiUSIIL Phishing URL Dataset (UCI #967). Part 1 due Sunday 9/20, Part 2 due Sun
 ## The argument
 
 A default classifier on this dataset scores near 1.0. That is not a result, it is a
-warning. `URLSimilarityIndex` is fixed at a single value for the entire legitimate
-class, so the feature restates the label. Several page-content features exceed .95
-accuracy on their own.
+warning. `URLSimilarityIndex` is fixed at 100 for all 134,850 legitimate rows, so the
+feature restates the label, and four page-content features exceed .94 accuracy on
+their own.
 
-So the project is not a leaderboard. It is a leakage audit. We report the naive
-result, show the single-feature baseline that matches it, then rebuild on features
-actually available at the moment a URL must be judged. The gap between those numbers
-is what we analyze.
+The obvious response is to remove the leaky features and see what the models can
+still do. We ran that. It does not work, and why it does not work is the finding.
+
+| Feature set | Random forest accuracy |
+|---|---|
+| `full` | 1.0000 |
+| `no_derived` | .9999 |
+| `url_only` | .9973 |
+
+Stripping `URLSimilarityIndex`, every derived feature, and all twenty-six
+page-content features costs about a quarter of a percentage point. Domain
+memorization does not explain it either. On a domain-grouped split with zero shared
+domains, `url_only` scores .9975, marginally higher.
+
+The explanation is in `results/class_constancy.csv`. Six URL-lexical features take
+one value across the entire legitimate class. Not one legitimate URL in 134,850 is
+served over plain HTTP. Not one contains an ampersand, which means not one carries a
+multi-parameter query string. Real web traffic does not look like that. This is a
+fingerprint of collection: the legitimate class reads as an HTTPS-only crawl of bare
+homepages, while the phishing class came from a feed with no such filter. No single
+lexical feature passes the .95 screen, so nothing trips the alarm, yet the two
+classes differ in shape before any feature is examined. See
+`figures/modal_share_by_class.png`.
+
+So the leakage is not localized in a feature group that can be named and dropped. It
+is in the sampling frame. That is why removing thirty-two features changes almost
+nothing, and it is why `url_only` is not a deployment estimate. It is the same
+construction artifact seen through a narrower window.
+
+The project is a leakage audit, and the claim is that this benchmark cannot be
+repaired by feature ablation. The evidence is the flatness of the very table that was
+expected to show a cliff.
+
+**Positive class.** Label 1 is legitimate and label 0 is phishing.
+`config.POS_LABEL = 0`, and `models.evaluate()` threads it through precision, recall,
+F1, and the cross-validated F1. sklearn defaults to `pos_label=1`, which would report
+detection of legitimate URLs in a paper about phishing. Accuracy and ROC AUC are
+unaffected.
 
 ## Repo contract
 
@@ -26,7 +60,8 @@ Five rules. They exist so five people produce one set of numbers.
 2. **Nobody calls `pd.read_csv` on the raw file.** Import `load_data()` from `src.data`.
 3. **Logic goes in `src/`, not in notebook cells.** The notebook is a driver.
 4. **Results go to disk as JSON or CSV.** Report writers read `results/`. Nobody
-   retypes a number out of a Colab output.
+   retypes a number out of a Colab output. Metrics filenames carry the split strategy,
+   so a grouped run does not overwrite the stratified one.
 5. **The dataset is not committed.** `.gitignore` blocks `data/*.csv`. The notebook
    fetches it via `ucimlrepo`, so each person downloads their own copy. `load_data()`
    fingerprints that copy and warns if it does not match the group's. The fingerprint
@@ -68,10 +103,10 @@ Defined once in `config.FEATURE_SETS`. Every model runs against all three.
 | Role | Owner | Produces | Consumed by |
 |---|---|---|---|
 | Lead / scaffold | Eric | repo, `config.py`, Section 1, Section 4, final assembly | everyone |
-| Data steward | | `cleaning_log.json`, frozen split, leakage screen | EDA, modeling |
-| EDA | | `figures/*.png`, Section 2 exploratory half | lead |
-| Modeling | | `metrics_*.json`, Section 3 | lead, Part 2 tuning |
-| Evaluation / ethics | | metric justification, background sources | lead, Part 2 ethics |
+| Data steward | Div | `cleaning_log.json`, frozen split, leakage screen | EDA, modeling |
+| EDA | Zubair | `figures/*.png`, Section 2 exploratory half | lead |
+| Modeling | Albert | `metrics_*.json`, Section 3 | lead, Part 2 tuning |
+| Evaluation / ethics | Bharadwaj | metric justification, background sources | lead, Part 2 ethics |
 
 ## Schedule
 
