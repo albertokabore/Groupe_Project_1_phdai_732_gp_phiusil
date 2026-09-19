@@ -1,0 +1,22 @@
+{
+  "model": "logistic_regression",
+  "feature_set": "full",
+  "n_features": 50,
+  "n_train": 176527,
+  "n_test": 58843,
+  "accuracy": 0.9999320225005524,
+  "precision": 0.9998813654832873,
+  "recall": 1.0,
+  "f1": 0.9999406792228979,
+  "roc_auc": 0.9999999834751265,
+  "confusion_matrix": {
+    "tn": 25126,
+    "fp": 4,
+    "fn": 0,
+    "tp": 33713
+  },
+  "seed": 42,
+  "timestamp_utc": "2026-09-15T18:52:48.857238+00:00",
+  "cv_f1_mean": 0.9998764215231016,
+  "cv_f1_sd": 3.907597072856295e-05
+}

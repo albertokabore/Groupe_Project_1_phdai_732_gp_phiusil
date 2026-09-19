@@ -156,7 +156,6 @@ def plot_leakage_diagnostics(df: pd.DataFrame):
     print("[5/5] Generating leakage diagnostics plot...")
     screen_path = c.RESULTS_DIR / "leakage_screen.csv"
     if not screen_path.exists():
-        # Fallback to function without fallback heuristics
         screen = single_feature_accuracy(df)
     else:
         screen = pd.read_csv(screen_path)

@@ -1,0 +1,4 @@
+feature_set,n_features,n_train,n_test,scaled_inputs_finite
+full,50,176527,58843,True
+no_derived,44,176527,58843,True
+url_only,18,176527,58843,True
