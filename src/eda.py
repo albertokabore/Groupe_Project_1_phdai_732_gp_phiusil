@@ -86,14 +86,35 @@ def plot_target_distribution(df: pd.DataFrame):
     print(f"       -> Saved: {out_path}")
 
 
+# Panels drawn by plot_feature_boxplots, named explicitly.
+#
+# These were previously taken as c.URL_LEXICAL[:5] and c.PAGE_CONTENT[:5]. A
+# positional slice makes the figure depend on the ORDER of a config list that is
+# free to change, and it did: the committed figures no longer matched what the
+# slice produced, so a rerun would silently have redrawn different panels under
+# the same filenames. The report cites these panels, so the selection is pinned
+# here. Both lists reproduce the figures as published. Membership of
+# c.URL_LEXICAL and c.PAGE_CONTENT is unchanged; only what gets plotted is fixed.
+EDA_URL_PANEL = [
+    "URLLength", "DomainLength", "NoOfSubDomain",
+    "NoOfLettersInURL", "NoOfDegitsInURL",
+]
+EDA_PAGE_PANEL = [
+    "LineOfCode", "NoOfImage", "NoOfCSS", "NoOfJS", "NoOfExternalRef",
+]
+
+
 def plot_feature_boxplots(df: pd.DataFrame):
-    """Plots comparative boxplots using c.URL_LEXICAL and c.PAGE_CONTENT."""
+    """Plots comparative boxplots for the pinned lexical and page-content panels."""
     print("[3/5] Generating lexical and DOM feature boxplots...")
-    
-    # 1. URL Lexical Features from config
-    url_feats = [col for col in c.URL_LEXICAL if col in df.columns]
+
+    # 1. URL lexical features (pinned; see EDA_URL_PANEL)
+    url_feats = [col for col in EDA_URL_PANEL if col in df.columns]
+    missing = [col for col in EDA_URL_PANEL if col not in df.columns]
+    if missing:
+        raise KeyError(f"EDA_URL_PANEL columns missing from the frame: {missing}")
     if url_feats:
-        display_feats = url_feats[:5]
+        display_feats = url_feats
         fig, axes = plt.subplots(1, len(display_feats), figsize=(18, 3.5))
         if len(display_feats) == 1:
             axes = [axes]
@@ -107,10 +128,13 @@ def plot_feature_boxplots(df: pd.DataFrame):
         plt.close()
         print(f"       -> Saved: {out_url}")
 
-    # 2. Page Content / DOM Features from config
-    page_feats = [col for col in c.PAGE_CONTENT if col in df.columns]
+    # 2. Page-content / DOM features (pinned; see EDA_PAGE_PANEL)
+    page_feats = [col for col in EDA_PAGE_PANEL if col in df.columns]
+    missing_page = [col for col in EDA_PAGE_PANEL if col not in df.columns]
+    if missing_page:
+        raise KeyError(f"EDA_PAGE_PANEL columns missing from the frame: {missing_page}")
     if page_feats:
-        display_page = page_feats[:5]
+        display_page = page_feats
         fig, axes = plt.subplots(1, len(display_page), figsize=(18, 3.5))
         if len(display_page) == 1:
             axes = [axes]

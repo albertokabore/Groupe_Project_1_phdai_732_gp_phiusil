@@ -1,0 +1,10 @@
+feature,pct_zero_phishing,pct_zero_legitimate,median_phishing,median_legitimate
+LineOfCode,0.0,0.0,12.0,1105.0
+NoOfImage,83.53,0.96,0.0,25.0
+NoOfCSS,80.41,1.97,0.0,6.0
+NoOfJS,77.23,1.06,0.0,14.0
+NoOfExternalRef,54.79,0.33,0.0,46.0
+NoOfSelfRef,78.54,3.76,0.0,76.0
+LargestLineLength,0.0,0.0,137.0,3066.0
+HasTitle,32.28,0.12,1.0,1.0
+HasFavicon,91.26,43.3,0.0,1.0
