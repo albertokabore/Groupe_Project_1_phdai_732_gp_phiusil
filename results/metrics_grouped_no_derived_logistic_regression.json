@@ -1,0 +1,25 @@
+{
+  "model": "logistic_regression",
+  "feature_set": "no_derived",
+  "split": "grouped",
+  "pos_label": 0,
+  "pos_label_meaning": "phishing",
+  "n_features": 44,
+  "n_train": 176906,
+  "n_test": 58464,
+  "accuracy": 0.9992302955665024,
+  "precision": 0.9994756373023556,
+  "recall": 0.998710249486115,
+  "f1": 0.9990927968066448,
+  "roc_auc": 0.9999757283118199,
+  "confusion_matrix": {
+    "tn": 24779,
+    "fp": 32,
+    "fn": 13,
+    "tp": 33640
+  },
+  "seed": 42,
+  "timestamp_utc": "2026-09-20T20:23:34.903559+00:00",
+  "cv_f1_mean": 0.9990090589293648,
+  "cv_f1_sd": 0.00014764088009831903
+}
