@@ -1,10 +1,10 @@
 {
   "model": "baseline_majority",
-  "feature_set": "full",
+  "feature_set": "url_only",
   "split": "stratified",
   "pos_label": 0,
   "pos_label_meaning": "phishing",
-  "n_features": 50,
+  "n_features": 18,
   "n_train": 176527,
   "n_test": 58843,
   "accuracy": 0.5729313597199327,
@@ -19,5 +19,5 @@
     "tp": 33713
   },
   "seed": 42,
-  "timestamp_utc": "2026-09-20T02:04:58.198428+00:00"
+  "timestamp_utc": "2026-09-18T23:08:24.990635+00:00"
 }
