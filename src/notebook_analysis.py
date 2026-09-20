@@ -84,7 +84,7 @@ def review_saved_metrics():
     metrics = pd.DataFrame(records)
     display(metrics[["feature_set", "model", "n_features", "accuracy",
                      "precision", "recall", "f1", "roc_auc"]].round(6))
-    print("Saved precision, recall, and F1 use legitimate (1) as positive.")
+    print("Saved precision, recall, and F1 use phishing (0) as positive.")
     rf = next(r for r in records if r["feature_set"] == "url_only" and r["model"] == "random_forest")
     cm = rf["confusion_matrix"]
     print(f"Phishing precision: {cm['tn'] / (cm['tn'] + cm['fn']):.2%}")
