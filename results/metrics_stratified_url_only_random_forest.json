@@ -1,0 +1,25 @@
+{
+  "model": "random_forest",
+  "feature_set": "url_only",
+  "split": "stratified",
+  "pos_label": 0,
+  "pos_label_meaning": "phishing",
+  "n_features": 18,
+  "n_train": 176527,
+  "n_test": 58843,
+  "accuracy": 0.9972809000220927,
+  "precision": 0.9992003198720512,
+  "recall": 0.9944289693593314,
+  "f1": 0.9968089349820503,
+  "roc_auc": 0.9981120089927417,
+  "confusion_matrix": {
+    "tn": 24990,
+    "fp": 140,
+    "fn": 20,
+    "tp": 33693
+  },
+  "seed": 42,
+  "timestamp_utc": "2026-09-20T20:22:22.377097+00:00",
+  "cv_f1_mean": 0.996776669559552,
+  "cv_f1_sd": 0.00018329550946142182
+}

@@ -1,0 +1,25 @@
+{
+  "model": "decision_tree",
+  "feature_set": "url_only",
+  "split": "grouped",
+  "pos_label": 0,
+  "pos_label_meaning": "phishing",
+  "n_features": 18,
+  "n_train": 176906,
+  "n_test": 58464,
+  "accuracy": 0.9972632731253421,
+  "precision": 0.9983825967409324,
+  "recall": 0.9951634355729314,
+  "f1": 0.9967704170199023,
+  "roc_auc": 0.9970278439941925,
+  "confusion_matrix": {
+    "tn": 24691,
+    "fp": 120,
+    "fn": 40,
+    "tp": 33613
+  },
+  "seed": 42,
+  "timestamp_utc": "2026-09-20T20:24:36.239088+00:00",
+  "cv_f1_mean": 0.9965725279026352,
+  "cv_f1_sd": 8.327258892248018e-05
+}
