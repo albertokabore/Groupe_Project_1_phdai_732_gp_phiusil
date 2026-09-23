@@ -1,0 +1,73 @@
+{
+  "model": "hist_gradient_boosting",
+  "feature_set": "url_only",
+  "selected_by": "highest mean CV phishing F1 in tuning_summary.csv (test not used)",
+  "params": {
+    "l2_regularization": 0.0,
+    "learning_rate": 0.2,
+    "max_iter": 600,
+    "max_leaf_nodes": 31
+  },
+  "test_metrics": {
+    "threshold": 0.5,
+    "accuracy": 0.9978247200176742,
+    "balanced_accuracy": 0.9974887013832464,
+    "precision": 0.9997201790853854,
+    "recall": 0.9951850378034222,
+    "f1": 0.997447453435967,
+    "mcc": 0.9955601081608695,
+    "roc_auc": 0.9978474782257937,
+    "pr_auc": 0.9984516592057068,
+    "log_loss": 0.016924589300497214,
+    "brier": 0.0020892454527193165,
+    "probability_rmse": 0.04570826459973422,
+    "probability_mae": 0.0035977651128585716,
+    "legit_false_alarm_rate": 0.00020763503692937442,
+    "phishing_miss_rate": 0.004814962196577796,
+    "phishing_caught": 25009,
+    "phishing_missed": 121,
+    "legit_flagged": 7,
+    "legit_passed": 33706,
+    "n_test": 58843
+  },
+  "bootstrap_95ci": {
+    "precision": [
+      0.9995158405679948,
+      0.99991989746876
+    ],
+    "recall": [
+      0.9943006121014517,
+      0.9959623010956697
+    ],
+    "f1": [
+      0.9969896224262731,
+      0.9978393271168594
+    ]
+  },
+  "n_bootstrap": 1000,
+  "thresholds": {
+    "default": 0.5,
+    "f1_optimal": 0.500009303824053,
+    "fpr_budget": 0.23075195005679908
+  },
+  "fpr_budget": 0.001,
+  "url_fingerprint": "0f9dc76443ca80d8e2cd7ad7183795a7c4619c1b0b2d4a37a60635003a568a3b",
+  "seed": 42,
+  "timestamp_utc": "2026-09-23T17:27:15.708104+00:00",
+  "error_counts": {
+    "legit_passed": 33706,
+    "phishing_caught": 25009,
+    "phishing_missed": 121,
+    "legit_flagged": 7
+  },
+  "error_confidence": {
+    "legit_flagged": {
+      "median_p_phishing": 0.5999955423452913,
+      "share_confident": 0.2857142857142857
+    },
+    "phishing_missed": {
+      "median_p_phishing": 0.0017635407632443645,
+      "share_confident": 0.9090909090909091
+    }
+  }
+}
