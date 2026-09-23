@@ -47,11 +47,31 @@ src/splits.py    frozen train/test assignment       (steward owns)
 src/leakage.py   single-feature audit               (steward owns)
 src/models.py    model roster, evaluate()           (modeling owns)
 src/eda.py       figures                            (EDA owns)
-notebooks/       thin Colab driver
+src/tuning.py    Part 2 grid search on url_only     (modeling owns)
+src/final_eval.py Part 2 test evaluation, errors, fairness, figures
+tests/           metric-helper tests; python -m pytest
+notebooks/       thin Colab driver; Part 1 = Sections 1-3, Part 2 = Sections 4-8
 results/         JSON and CSV outputs
 figures/         PNG, referenced by filename in the report
-reports/         report drafts
+reports/         report drafts; build_deliverable2_docx.py writes the Part 2 Word report
 ```
+
+## Part 2
+
+Tuning, final evaluation, and the report run in this order. Each step reads only
+what the previous one wrote to `results/`.
+
+```bash
+python -m src.tuning                        # ~40 min on 8 cores; writes results/tuning*
+python -m src.final_eval                    # ~10 min; writes results/final_*, figures/final_*
+python reports/build_deliverable2_docx.py   # reports/Deliverable2_Report.docx
+python -m pytest                            # needs pytest
+```
+
+The final model is picked by cross-validated F1 in `tuning_summary.csv`, and
+decision thresholds come from out-of-fold training predictions. The test partition
+is opened once, in `final_eval.py`. Notebook Sections 4-8 read the saved results by
+default; set `RUN_SEARCH` or `RUN_FINAL` to recompute.
 
 ## Feature sets
 

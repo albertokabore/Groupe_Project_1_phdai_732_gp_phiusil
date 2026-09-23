@@ -1,0 +1,3 @@
+IsHTTPS,n,n_legit,n_phishing,share_phishing,legit_false_alarm_rate,phishing_miss_rate
+1,46023,33713,12310,0.26747495817308736,0.00020763503692937442,0.009829406986190089
+0,12820,0,12820,1.0,,0.0
